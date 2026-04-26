@@ -1,0 +1,127 @@
+# stardust.mini 完整示例配置
+# 启动前设置环境变量：export runConfig=./example/config.toml
+
+# ── 全局（必填）───────────────────────────────────────────────
+[global]
+app_name         = "my-service"
+app_version      = "1.0.0"
+redis_key_prefix = "my-service"
+
+# ── 日志 ─────────────────────────────────────────────────────
+[logs]
+filename   = "./logs/app.log"
+maxsize    = 100    # MB，单文件上限
+maxage     = 7      # 天，日志保留时长
+maxbackups = 5      # 最多保留文件数
+localtime  = true
+compress   = false
+level      = 0      # 0=debug 1=info 2=warn 3=error 4=dpanic 5=panic 6=fatal
+
+# ── Redis（多实例，[[redis]] 数组格式）───────────────────────
+# 实例1：主业务缓存（db 0）
+[[redis]]
+name       = "default"
+addrs      = ["127.0.0.1:6379"]
+password   = ""
+key_prefix = "my-service"
+db_index   = 0
+pool_size  = 10
+
+# 实例2：会话存储（db 1，独立 key 前缀）
+[[redis]]
+name       = "session"
+addrs      = ["127.0.0.1:6379"]
+password   = ""
+key_prefix = "my-service:session"
+db_index   = 1
+pool_size  = 5
+
+# 实例3：Redis Cluster（多节点，use_cluster = true）
+# [[redis]]
+# name        = "cluster"
+# addrs       = ["127.0.0.1:7000", "127.0.0.1:7001", "127.0.0.1:7002"]
+# password    = ""
+# key_prefix  = "my-service:cluster"
+# use_cluster = true
+# pool_size   = 20
+
+# ── 数据库（多库，[[databases]] 数组格式）────────────────────
+# 库1：主业务库（MySQL，带读写分离）
+[[databases]]
+name             = "main"
+db_type          = "mysql"
+master           = "root:password@tcp(127.0.0.1:3306)/main_db?charset=utf8mb4&parseTime=True&loc=Local"
+slaves           = [
+  "root:password@tcp(127.0.0.1:3307)/main_db?charset=utf8mb4&parseTime=True&loc=Local",
+  "root:password@tcp(127.0.0.1:3308)/main_db?charset=utf8mb4&parseTime=True&loc=Local",
+]
+use_master_slave = true
+max_conn         = 20
+max_idle         = 5
+show_sql         = false
+
+# 库2：日志/归档库（PostgreSQL，单机写入，无读写分离需求）
+[[databases]]
+name     = "archive"
+db_type  = "postgres"
+master   = "host=127.0.0.1 port=5432 user=root dbname=archive_db password=password sslmode=disable"
+max_conn = 10
+max_idle = 2
+show_sql = false
+
+# ── MongoDB ──────────────────────────────────────────────────
+[mongodb]
+name      = "default"
+uri       = "mongodb://root:password@127.0.0.1:27017/mydb?authSource=admin"
+database  = "mydb"
+max_pool  = 10
+min_pool  = 2
+timeout_s = 5
+
+# ── ClickHouse ───────────────────────────────────────────────
+[clickhouse]
+name           = "default"
+addr           = "127.0.0.1:9000"
+database       = "mydb"
+username       = "default"
+password       = ""
+max_conn       = 10
+max_idle       = 5
+dial_timeout_s = 5
+
+# ── NATS（必须为数组格式）─────────────────────────────────────
+[[nats]]
+name        = "default"
+url         = "nats://127.0.0.1:4222"
+use_stream  = true
+stream_name = "my-stream"
+subjects    = ["my-service.>"]
+# username = ""
+# password = ""
+
+# ── 链路追踪（Jaeger OTLP HTTP）──────────────────────────────
+[tracing]
+service_name = "my-service"
+endpoint     = "127.0.0.1:4318"   # Jaeger all-in-one 默认 OTLP HTTP 端口
+sample_rate  = 1.0                 # 1.0=全采样，生产建议 0.1
+
+# ── HTTP 服务器（Gin）────────────────────────────────────────
+[http_server]
+port        = 8080
+address     = "0.0.0.0"
+cors        = true
+request_log = true
+access      = false
+mode        = "gin"
+worker_id   = 1        # Snowflake worker ID，多实例时每个实例设不同值
+
+# ── gRPC 服务器 ──────────────────────────────────────────────
+[grpc_server]
+listen_on = "0.0.0.0:9090"
+timeout   = 5000    # 毫秒
+
+# 可选：通过 etcd 做服务注册
+# [grpc_server.etcd]
+# endpoints    = ["127.0.0.1:2379"]
+# service_name = "my-service"
+# tags         = ["v1"]

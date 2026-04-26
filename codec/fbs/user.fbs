@@ -1,0 +1,8 @@
+namespace fbs;
+
+table User {
+    user_name: string;
+    password: string;
+}
+
+root_type User;

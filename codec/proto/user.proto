@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package codec;
+
+
+message User {
+    string user_name = 1;
+    string password = 2;
+}
