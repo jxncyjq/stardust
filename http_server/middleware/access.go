@@ -59,7 +59,7 @@ func Access() gin.HandlerFunc {
 				c.Abort()
 				return
 			}
-			c.Request.URL.Query().Add("id", id)
+			c.Set("id", id)
 		} else {
 			ip := c.ClientIP()
 			// 判断是否内网IP

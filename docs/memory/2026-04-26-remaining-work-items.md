@@ -27,7 +27,7 @@ related_docs:
 - [x] `app/container_test.go` — 7 个单元测试全部通过
 - [x] `app/components/` — 8 个适配器（logs/redis/databases/mongodb/clickhouse/nats/tracing/server）
 - [x] `tracing/jaeger.go` — 新增 Shutdown(ctx) 方法
-- [x] `example/app_example.go` — 演示声明式启动
+- [x] `example/main.go` — 演示声明式启动
 
 ## 进行中
 - 无

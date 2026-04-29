@@ -69,26 +69,6 @@ max_conn = 10
 max_idle = 2
 show_sql = false
 
-# ── MongoDB ──────────────────────────────────────────────────
-[mongodb]
-name      = "default"
-uri       = "mongodb://root:password@127.0.0.1:27017/mydb?authSource=admin"
-database  = "mydb"
-max_pool  = 10
-min_pool  = 2
-timeout_s = 5
-
-# ── ClickHouse ───────────────────────────────────────────────
-[clickhouse]
-name           = "default"
-addr           = "127.0.0.1:9000"
-database       = "mydb"
-username       = "default"
-password       = ""
-max_conn       = 10
-max_idle       = 5
-dial_timeout_s = 5
-
 # ── NATS（必须为数组格式）─────────────────────────────────────
 [[nats]]
 name        = "default"
@@ -105,15 +85,39 @@ service_name = "my-service"
 endpoint     = "127.0.0.1:4318"   # Jaeger all-in-one 默认 OTLP HTTP 端口
 sample_rate  = 1.0                 # 1.0=全采样，生产建议 0.1
 
+# ── 国际化（go-i18n）────────────────────────────────────────
+[i18n]
+default_language    = "zh"
+supported_languages = ["zh", "en"]
+query_key           = "lang"
+header_key          = "Accept-Language"
+
 # ── HTTP 服务器（Gin）────────────────────────────────────────
 [http_server]
 port        = 8080
 address     = "0.0.0.0"
 cors        = true
 request_log = true
-access      = false
+access      = true
 mode        = "gin"
 worker_id   = 1        # Snowflake worker ID，多实例时每个实例设不同值
+
+[authz]
+# 方式一：文件策略，适合最小示例
+model_path  = "./example/config/casbin/model.conf"
+policy_path = "./example/config/casbin/policy.csv"
+adapter     = "file"
+subject_key = "id"
+object_mode = "route"
+action_mode = "method"
+
+# 方式二：数据库策略，适合把 Casbin 规则放到数据库中
+# adapter = "gorm"
+# database_name = "main"
+# policy_path = "" # gorm 模式下不需要
+# 或者直接填写 driver + dsn，绕过 [databases] 组件：
+# driver = "mysql"
+# dsn = "root:password@tcp(127.0.0.1:3306)/casbin?charset=utf8mb4&parseTime=True&loc=Local"
 
 # ── gRPC 服务器 ──────────────────────────────────────────────
 [grpc_server]

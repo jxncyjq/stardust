@@ -1,0 +1,3 @@
+p, roleName, /api/v1/user/:id, GET
+p, roleName, /api/v1/game/:id, GET
+p, roleName, /api/v1/game/score, POST

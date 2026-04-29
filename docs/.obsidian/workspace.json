@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "12e33b1215c69c2a",
+        "id": "276b14b1cf6c2d3f",
         "type": "tabs",
         "children": [
           {
-            "id": "5c29db36a0a085e6",
+            "id": "cbea3cfd6639c9ad",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "design/design-stardust-bugfix-plan-001.md",
+                "file": "reference/index.md.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "design-stardust-bugfix-plan-001"
+              "title": "index.md"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 472.5
   },
   "right": {
     "id": "c2ab37228c5fcc71",
@@ -164,13 +164,23 @@
               "icon": "lucide-list",
               "title": "docs-index 的大纲"
             }
+          },
+          {
+            "id": "96ebbbe183e8f29a",
+            "type": "leaf",
+            "state": {
+              "type": "copilot-chat-view",
+              "state": {},
+              "icon": "message-square",
+              "title": "Copilot"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 593.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -181,22 +191,50 @@
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "bases:新建数据库": false
+      "bases:新建数据库": false,
+      "copilot:Open Copilot Chat": false,
+      "obsidian-textgenerator-plugin:Generate Text!": false,
+      "obsidian-textgenerator-plugin:Text Generator: Templates Packages Manager": false
     }
   },
-  "active": "5c29db36a0a085e6",
+  "active": "cbea3cfd6639c9ad",
   "lastOpenFiles": [
-    "Clippings/Claude Code 必备神器：oh-my-claudecode 及其  Team Mode 实践.md",
-    "design/design-stardust-bugfix-plan-001.md",
-    "Clippings",
-    "design/design-app-component-001.md",
-    "guide-progress-001.md",
+    "reference/reference-uuid-module-001.md",
+    "reference/index.md.md",
+    "copilot/copilot-custom-prompts/Explain like I am 5.md",
+    "copilot/copilot-custom-prompts/Emojify.md",
+    "copilot/copilot-custom-prompts/Clip YouTube Transcript.md",
+    "copilot/copilot-custom-prompts/Clip Web Page.md",
+    "copilot/copilot-custom-prompts/Summarize.md",
+    "copilot/copilot-custom-prompts/Simplify.md",
+    "copilot/copilot-custom-prompts/Rewrite as tweet thread.md",
+    "copilot/copilot-custom-prompts/Rewrite as tweet.md",
+    "copilot/copilot-custom-prompts/Remove URLs.md",
+    "reference/reference-clickhouse-module-001.md",
+    "reference/reference-authz-module-001.md",
+    "测试.md",
     "docs-index.md",
-    "2026-04-26.md",
-    "未命名.base",
-    "memory/2026-04-26-remaining-work-items.md",
+    "未命名.canvas",
+    "reference/components/reference-component-authz-001.md",
+    "superpowers/plans/2026-04-27-i18n-middleware.md",
+    "superpowers/plans/2026-04-27-casbin-authz.md",
+    "copilot/copilot-conversations/Model_Request_Failed@20260429_012628.md",
+    "copilot/copilot-conversations",
+    "copilot/copilot-custom-prompts/Generate glossary.md",
+    "copilot/copilot-custom-prompts/Generate table of contents.md",
+    "copilot/copilot-custom-prompts/Make longer.md",
+    "copilot/copilot-custom-prompts/Make shorter.md",
+    "copilot/copilot-custom-prompts/Translate to Chinese.md",
+    "copilot/copilot-custom-prompts/Fix grammar and spelling.md",
+    "copilot/copilot-custom-prompts",
+    "copilot",
     "progress.md",
-    "design-app-component-001.md",
-    "design"
+    "superpowers/plans",
+    "superpowers",
+    "wiki/synthesis",
+    "wiki/sources",
+    "wiki/queries",
+    "wiki/concepts",
+    "wiki/entities"
   ]
 }

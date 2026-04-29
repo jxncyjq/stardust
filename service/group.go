@@ -16,13 +16,28 @@ type Service interface {
 	Stop()
 }
 
+// Manager 统一管理多个 Service 的生命周期。
+//
+// 框架代码应优先依赖该接口，而不是直接依赖 ServiceGroup，
+// 便于后续替换为带健康检查、错误收集或远程编排能力的实现。
+type Manager interface {
+	Add(svc Service)
+	AddMany(services ...Service)
+	StartAsync()
+	Start()
+	Stop()
+}
+
 // ServiceGroup 服务组，统一管理多个服务的生命周期
 type ServiceGroup struct {
-	services []Service
-	stopOnce sync.Once
-	stopCh   chan struct{}
-	logger   *zap.Logger
+	services  []Service
+	startOnce sync.Once
+	stopOnce  sync.Once
+	stopCh    chan struct{}
+	logger    *zap.Logger
 }
+
+var _ Manager = (*ServiceGroup)(nil)
 
 // NewServiceGroup 创建服务组
 func NewServiceGroup() *ServiceGroup {
@@ -35,20 +50,35 @@ func NewServiceGroup() *ServiceGroup {
 
 // Add 添加服务到组
 func (sg *ServiceGroup) Add(svc Service) {
+	if svc == nil {
+		return
+	}
 	sg.services = append(sg.services, svc)
+}
+
+// AddMany 批量添加服务到组。
+func (sg *ServiceGroup) AddMany(services ...Service) {
+	for _, svc := range services {
+		sg.Add(svc)
+	}
 }
 
 // Start 启动所有服务并监听退出信号
 func (sg *ServiceGroup) Start() {
-	sg.startAll()
+	sg.StartAsync()
 	sg.waitForSignal()
 	sg.Stop()
 }
 
-func (sg *ServiceGroup) startAll() {
-	for _, svc := range sg.services {
-		go svc.Start()
-	}
+// StartAsync 非阻塞启动所有服务。
+//
+// 适用于 app.Component 等已有生命周期编排器托管信号和退出流程的场景。
+func (sg *ServiceGroup) StartAsync() {
+	sg.startOnce.Do(func() {
+		for _, svc := range sg.services {
+			go svc.Start()
+		}
+	})
 }
 
 // Stop 停止所有服务（逆序关闭，后启动的先关闭）

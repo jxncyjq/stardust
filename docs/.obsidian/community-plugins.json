@@ -1,4 +1,6 @@
 [
   "dataview",
-  "templater-obsidian"
+  "templater-obsidian",
+  "copilot",
+  "obsidian-textgenerator-plugin"
 ]

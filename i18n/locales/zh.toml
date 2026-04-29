@@ -1,0 +1,2 @@
+[Hello]
+other = "你好，{{.Name}}"

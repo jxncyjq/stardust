@@ -1,0 +1,94 @@
+---
+id: "reference-component-http-server-001"
+title: "HTTPServerComponent 使用说明"
+aliases: ["HTTPServerComponent", "HTTP服务器组件", "Gin组件"]
+type: "reference"
+category: "backend/library/components"
+tags: ["app", "components", "http", "gin", "server"]
+version: "1.0.0"
+created: "2026-04-27"
+updated: "2026-04-27"
+author: "jxncyjq"
+status: "published"
+parent: "guide-app-components-module-001"
+children:
+  - "reference-component-http-server-from-app-001"
+related_docs:
+  - id: "guide-app-components-module-001"
+    relation: "depends_on"
+    path: "../../guides/guide-app-components-module-001.md"
+  - id: "reference-component-http-server-from-app-001"
+    relation: "related_to"
+    path: "./reference-component-http-server-from-app-001.md"
+  - id: "reference-metric-module-001"
+    relation: "related_to"
+    path: "../reference-metric-module-001.md"
+  - id: "reference-uuid-module-001"
+    relation: "related_to"
+    path: "../reference-uuid-module-001.md"
+---
+
+# HTTPServerComponent 使用说明
+
+<!-- @section: overview -->
+## 概述
+
+`components.HTTPServerComponent(setupFn)` 负责创建并启动 `http_server.HttpServer`。它读取配置 key `http_server`，在 `Init` 阶段创建 server 并调用 `setupFn` 注册中间件组和路由。
+<!-- @end-section -->
+
+<!-- @section: contract -->
+## 组件契约
+
+| 项 | 值 |
+| --- | --- |
+| 构造函数 | `components.HTTPServerComponent(setupFn)` |
+| 组件名 | `http_server` |
+| 依赖 | `logs`, `tracing` |
+| 配置 key | `http_server` |
+| Init | 创建 HTTP server，执行路由注册函数 |
+| Start | `srv.Startup()` |
+| Stop | `srv.Stop()` |
+<!-- @end-section -->
+
+<!-- @section: usage -->
+## 使用方式
+
+<!-- @code: usage -->
+```go
+app.New(conf.Get).
+    Use(
+        components.LogsComponent(),
+        components.TracingComponent(),
+        components.HTTPServerComponent(func(srv *httpServer.HttpServer) {
+            srv.AddGroup("v1", middleware.Metrics("my-service"))
+            srv.Get("health", "", httpServer.NewHandler("health", nil, healthHandler))
+        }),
+    ).
+    Run(context.Background())
+```
+<!-- @end-code -->
+
+如果希望中间件组集中声明在 `app.Application`，优先使用 [[reference-component-http-server-from-app-001]]。
+<!-- @end-section -->
+
+<!-- @section: config -->
+## 配置示例
+
+<!-- @code: config -->
+```toml
+[http_server]
+port        = 8080
+address     = "0.0.0.0"
+cors        = true
+request_log = true
+access      = false
+mode        = "gin"
+worker_id   = 1
+```
+<!-- @end-code -->
+<!-- @end-section -->
+
+## 相关文档
+
+- [[reference-component-http-server-from-app-001]]
+- [[reference-component-tracing-001]]

@@ -11,7 +11,8 @@ updated: "2026-04-26"
 author: "jxncyjq"
 status: "published"
 parent: null
-children: []
+children:
+  - "guide-app-components-module-001"
 related_docs:
   - id: "reference-daily-20260426"
     relation: "related_to"

@@ -18,6 +18,7 @@ related_docs:
     path: "./design/design-app-component-001.md"
 ---
 
+
 # app 包组件化统一接口 — 实现进度
 
 <!-- @section: overview -->
@@ -46,7 +47,7 @@ related_docs:
 | `app/components/nats.go`       | nats 适配器，Start 非阻塞（go StartAll），Stop 调 CloseAll   |
 | `app/components/tracing.go`    | tracing 适配器，Stop 调 Shutdown(ctx) 刷 span           |
 | `app/components/server.go`     | NewHTTPServerFromConfig / NewGRPCServerFromConfig |
-| `example/app_example.go`       | 演示声明式启动（build tag: ignore）                        |
+| `example/main.go`              | 演示声明式启动（最新 canonical 示例）                       |
 <!-- @end-section -->
 
 <!-- @section: changes -->
