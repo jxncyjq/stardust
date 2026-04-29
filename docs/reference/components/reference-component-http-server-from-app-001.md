@@ -7,7 +7,7 @@ category: "backend/library/components"
 tags: ["app", "components", "http", "application", "server"]
 version: "1.0.0"
 created: "2026-04-27"
-updated: "2026-04-27"
+updated: "2026-04-29"
 author: "jxncyjq"
 status: "published"
 parent: "reference-component-http-server-001"
@@ -36,7 +36,7 @@ related_docs:
 | --- | --- |
 | 构造函数 | `components.HTTPServerFromApp(app, setupFn)` |
 | 组件名 | `http_server` |
-| 依赖 | `logs`, `tracing` |
+| 依赖 | `logs` |
 | 配置 key | `http_server` |
 | Init | 创建 HTTP server，应用 `WithHTTPGroup`，执行路由注册函数 |
 | Start | `srv.Startup()` |
@@ -63,6 +63,8 @@ myApp.Use(
 ).Run(context.Background())
 ```
 <!-- @end-code -->
+
+`components.TracingComponent()` 只在 HTTP 组挂载 `middleware.Tracing(...)` 或需要全局 tracer provider 时注册；`HTTPServerFromApp` 本身不强依赖 `tracing`。
 
 同一个 `Application` 中不要同时注册 `HTTPServerComponent` 和 `HTTPServerFromApp`，因为二者组件名均为 `http_server`。
 <!-- @end-section -->

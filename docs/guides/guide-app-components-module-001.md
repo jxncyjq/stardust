@@ -7,7 +7,7 @@ category: "backend/library"
 tags: ["app", "components", "module", "service", "lifecycle"]
 version: "1.0.0"
 created: "2026-04-27"
-updated: "2026-04-27"
+updated: "2026-04-29"
 author: "jxncyjq"
 status: "published"
 parent: "design-app-component-001"
@@ -53,6 +53,7 @@ app.New(conf.Get).
     WithHTTPGroup("v1", middleware.I18n(), middleware.Metrics(appName), middleware.Tracing(appName), middleware.Authz()).
     Use(
         components.LogsComponent(),
+        components.TracingComponent(),
         components.RedisComponent(),
         components.DatabasesComponent(),
         components.I18nComponent(),

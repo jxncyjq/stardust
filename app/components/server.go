@@ -29,13 +29,13 @@ type httpServerComponent struct {
 //	    srv.Post("hello", "v1", httpServer.NewHandler(...))
 //	})
 //
-// 依赖：logs、tracing（确保日志和追踪在路由注册前已初始化）。
+// 依赖：logs。tracing 为可选项；使用 middleware.Tracing 时请显式注册 TracingComponent。
 func HTTPServerComponent(setupFn func(*httpServer.HttpServer)) app.Component {
 	return &httpServerComponent{setup: setupFn}
 }
 
-func (c *httpServerComponent) Name() string          { return "http_server" }
-func (c *httpServerComponent) Dependencies() []string { return []string{"logs", "tracing"} }
+func (c *httpServerComponent) Name() string           { return "http_server" }
+func (c *httpServerComponent) Dependencies() []string { return []string{"logs"} }
 
 func (c *httpServerComponent) Init(_ context.Context, configFn app.ConfigFunc) (retErr error) {
 	defer recoverToError(&retErr, "http_server")
@@ -85,7 +85,7 @@ func GRPCServerComponent(setupFn func(*grpc.Server)) app.Component {
 	return &grpcServerComponent{setup: setupFn}
 }
 
-func (c *grpcServerComponent) Name() string          { return "grpc_server" }
+func (c *grpcServerComponent) Name() string           { return "grpc_server" }
 func (c *grpcServerComponent) Dependencies() []string { return []string{"logs", "tracing"} }
 
 func (c *grpcServerComponent) Init(_ context.Context, configFn app.ConfigFunc) (retErr error) {
@@ -157,8 +157,8 @@ func HTTPServerFromApp(a *app.Application, setupFn func(*httpServer.HttpServer))
 	return &boundHTTPServerComponent{application: a, setup: setupFn}
 }
 
-func (c *boundHTTPServerComponent) Name() string          { return "http_server" }
-func (c *boundHTTPServerComponent) Dependencies() []string { return []string{"logs", "tracing"} }
+func (c *boundHTTPServerComponent) Name() string           { return "http_server" }
+func (c *boundHTTPServerComponent) Dependencies() []string { return []string{"logs"} }
 
 func (c *boundHTTPServerComponent) Init(_ context.Context, configFn app.ConfigFunc) (retErr error) {
 	defer recoverToError(&retErr, "http_server")

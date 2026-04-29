@@ -197,8 +197,15 @@
       "obsidian-textgenerator-plugin:Text Generator: Templates Packages Manager": false
     }
   },
-  "active": "cbea3cfd6639c9ad",
+  "active": "f0b60c65c15aa982",
   "lastOpenFiles": [
+    "reference/components/XXeqatWP",
+    "reference/components/XXTeH6aj",
+    "reference/components/XXKg8Zdj",
+    "guides/XXHbDOiq",
+    "reference-docs-index.md",
+    "reference-docs-index-table.md",
+    "guides/guide-app-components-module-001.md",
     "reference/reference-uuid-module-001.md",
     "reference/index.md.md",
     "copilot/copilot-custom-prompts/Explain like I am 5.md",
@@ -223,18 +230,11 @@
     "copilot/copilot-custom-prompts/Generate glossary.md",
     "copilot/copilot-custom-prompts/Generate table of contents.md",
     "copilot/copilot-custom-prompts/Make longer.md",
-    "copilot/copilot-custom-prompts/Make shorter.md",
-    "copilot/copilot-custom-prompts/Translate to Chinese.md",
-    "copilot/copilot-custom-prompts/Fix grammar and spelling.md",
     "copilot/copilot-custom-prompts",
     "copilot",
-    "progress.md",
     "superpowers/plans",
     "superpowers",
     "wiki/synthesis",
-    "wiki/sources",
-    "wiki/queries",
-    "wiki/concepts",
-    "wiki/entities"
+    "wiki/sources"
   ]
 }

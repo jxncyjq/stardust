@@ -7,7 +7,7 @@ category: "backend/library/components"
 tags: ["app", "components", "tracing", "jaeger", "opentelemetry"]
 version: "1.0.0"
 created: "2026-04-27"
-updated: "2026-04-27"
+updated: "2026-04-29"
 author: "jxncyjq"
 status: "published"
 parent: "guide-app-components-module-001"
@@ -57,7 +57,7 @@ app.New(conf.Get).
 ```
 <!-- @end-code -->
 
-HTTP/gRPC server 组件依赖 `tracing`，如果使用它们，通常同时注册 `TracingComponent`。
+HTTP server 组件不强依赖 `tracing`；只有挂载 `middleware.Tracing(...)` 或需要全局 tracer provider 时才注册 `TracingComponent`。gRPC server 组件默认注入 tracing interceptor，仍依赖 `tracing`。
 <!-- @end-section -->
 
 <!-- @section: config -->
