@@ -1,9 +1,8 @@
 package httpServer
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/jxncyjq/stardust/errors"
 )
 
 // 定义handler参数的结构
@@ -51,15 +50,19 @@ func (h *Handler[Req, Resp]) GetFunc() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req Req
 		if err := c.ShouldBind(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			Response(c, errors.New(err.Error(), 40000), nil)
 			return
 		}
 		resp, err := h.Func(c, req)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			if se, ok := err.(*errors.StackError); ok {
+				Response(c, se, nil)
+			} else {
+				Response(c, errors.New(err.Error(), 50000), nil)
+			}
 			return
 		}
-		c.JSON(http.StatusOK, resp)
+		Response(c, nil, resp)
 	}
 }
 

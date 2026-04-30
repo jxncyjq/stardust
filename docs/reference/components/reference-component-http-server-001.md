@@ -7,7 +7,7 @@ category: "backend/library/components"
 tags: ["app", "components", "http", "gin", "server"]
 version: "1.0.0"
 created: "2026-04-27"
-updated: "2026-04-29"
+updated: "2026-04-30"
 author: "jxncyjq"
 status: "published"
 parent: "guide-app-components-module-001"
@@ -68,6 +68,8 @@ app.New(conf.Get).
 <!-- @end-code -->
 
 `TracingComponent` 对 HTTP 服务是可选项；只有挂载 `middleware.Tracing(...)` 或需要全局 tracer provider 时才显式注册。
+
+HTTP 路由便捷方法覆盖 `Get`、`Post`、`Put`、`Patch`、`Delete`、`Head`、`Options`、`Connect`、`Trace`；其它自定义方法可继续使用 `Handle(method, path, handler)`。
 
 如果希望中间件组集中声明在 `app.Application`，优先使用 [[reference-component-http-server-from-app-001]]。
 <!-- @end-section -->

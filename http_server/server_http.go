@@ -180,6 +180,78 @@ func (m *HttpServer) Put(path string, group string, handler IHandler) {
 	m.Handle(http.MethodPut, path, handler)
 }
 
+func (m *HttpServer) Patch(path string, group string, handler IHandler) {
+	if group != "" {
+		if _, exists := m.group[group]; !exists {
+			panic(fmt.Sprintf("http server: group %q not found, call AddGroup first", group))
+		}
+		m.group[group].Group.PATCH(fmt.Sprintf("/%s", path), handler.GetFunc())
+		m.logger.Info("http handler registered to group:", logs.String("path", path), logs.String("prefix", m.group[group].Prefix))
+		return
+	}
+	m.Handle(http.MethodPatch, path, handler)
+}
+
+func (m *HttpServer) Delete(path string, group string, handler IHandler) {
+	if group != "" {
+		if _, exists := m.group[group]; !exists {
+			panic(fmt.Sprintf("http server: group %q not found, call AddGroup first", group))
+		}
+		m.group[group].Group.DELETE(fmt.Sprintf("/%s", path), handler.GetFunc())
+		m.logger.Info("http handler registered to group:", logs.String("path", path), logs.String("prefix", m.group[group].Prefix))
+		return
+	}
+	m.Handle(http.MethodDelete, path, handler)
+}
+
+func (m *HttpServer) Head(path string, group string, handler IHandler) {
+	if group != "" {
+		if _, exists := m.group[group]; !exists {
+			panic(fmt.Sprintf("http server: group %q not found, call AddGroup first", group))
+		}
+		m.group[group].Group.HEAD(fmt.Sprintf("/%s", path), handler.GetFunc())
+		m.logger.Info("http handler registered to group:", logs.String("path", path), logs.String("prefix", m.group[group].Prefix))
+		return
+	}
+	m.Handle(http.MethodHead, path, handler)
+}
+
+func (m *HttpServer) Options(path string, group string, handler IHandler) {
+	if group != "" {
+		if _, exists := m.group[group]; !exists {
+			panic(fmt.Sprintf("http server: group %q not found, call AddGroup first", group))
+		}
+		m.group[group].Group.OPTIONS(fmt.Sprintf("/%s", path), handler.GetFunc())
+		m.logger.Info("http handler registered to group:", logs.String("path", path), logs.String("prefix", m.group[group].Prefix))
+		return
+	}
+	m.Handle(http.MethodOptions, path, handler)
+}
+
+func (m *HttpServer) Connect(path string, group string, handler IHandler) {
+	if group != "" {
+		if _, exists := m.group[group]; !exists {
+			panic(fmt.Sprintf("http server: group %q not found, call AddGroup first", group))
+		}
+		m.group[group].Group.Handle(http.MethodConnect, fmt.Sprintf("/%s", path), handler.GetFunc())
+		m.logger.Info("http handler registered to group:", logs.String("path", path), logs.String("prefix", m.group[group].Prefix))
+		return
+	}
+	m.Handle(http.MethodConnect, path, handler)
+}
+
+func (m *HttpServer) Trace(path string, group string, handler IHandler) {
+	if group != "" {
+		if _, exists := m.group[group]; !exists {
+			panic(fmt.Sprintf("http server: group %q not found, call AddGroup first", group))
+		}
+		m.group[group].Group.Handle(http.MethodTrace, fmt.Sprintf("/%s", path), handler.GetFunc())
+		m.logger.Info("http handler registered to group:", logs.String("path", path), logs.String("prefix", m.group[group].Prefix))
+		return
+	}
+	m.Handle(http.MethodTrace, path, handler)
+}
+
 func joinHTTPPath(parts ...string) string {
 	segments := make([]string, 0, len(parts))
 	for _, part := range parts {
