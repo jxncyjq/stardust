@@ -3,7 +3,9 @@ example.exe
 /.claude
 /.omc
 /sample
-/.codex
+/.codex/INSTRUCTIONS
+/.codex/skills/*
+!/.codex/skills/go-stardust-rtl
 AGENTS.md
 
 /docs/copilot
