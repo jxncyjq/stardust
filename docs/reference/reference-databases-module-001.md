@@ -7,7 +7,7 @@ category: "backend/library"
 tags: ["databases", "gorm", "dao", "transaction", "mysql", "postgres"]
 version: "1.0.0"
 created: "2026-04-27"
-updated: "2026-04-27"
+updated: "2026-04-30"
 author: "jxncyjq"
 status: "published"
 parent: "reference-component-databases-001"
@@ -153,6 +153,32 @@ raw := dbMgr.GetDbInterface("main")
 | `GetDbInterface(name)` | 返回底层 `DBConn`，即 `*gorm.DB` 别名 |
 
 如果名称不存在，两个方法都会返回 `nil`。
+<!-- @end-section -->
+
+<!-- @section: modeling-access-rules -->
+## 建模与访问约束
+
+业务表结构和访问方式应遵循以下约束：
+
+- 所有数据库表都必须包含 `ID` 字段，并将 `ID` 定义为数据库主键。
+- `ID` 字段必须使用 `bigint64` 语义的自增整数；Go 结构体中使用 `int64`，数据库中使用对应的 `BIGINT` / `bigint` 自增主键类型。
+- 所有时间相关字段必须使用时间戳，不使用 `datetime` / `timestamp with time zone` 等数据库时间类型。
+- 时间戳字段必须使用 `bigint64` 语义；Go 结构体中使用 `int64`，数据库中使用对应的 `BIGINT` / `bigint` 类型。
+- 数据库访问原则上通过 `BaseDao` / `SessionDao` / `Entity` 等 DAO 封装完成，不直接在业务代码中使用 native SQL 或底层 GORM API。
+- 只有在 DAO 当前能力无法表达的场景下，才考虑使用 `Query`、`Native()` 或 `GetDbInterface(...)`，并应控制在基础设施适配层内，避免业务逻辑绑定具体 ORM，便于后续框架迁移。
+
+推荐的模型形态：
+
+<!-- @code: modeling-rules-example -->
+```go
+type User struct {
+    ID        int64  `gorm:"primaryKey;autoIncrement;column:id"`
+    Name      string `gorm:"column:name"`
+    CreatedAt int64  `gorm:"column:created_at"`
+    UpdatedAt int64  `gorm:"column:updated_at"`
+}
+```
+<!-- @end-code -->
 <!-- @end-section -->
 
 <!-- @section: dao -->

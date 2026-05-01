@@ -13,6 +13,7 @@ status: "published"
 parent: "guide-app-components-module-001"
 children:
   - "reference-component-http-server-from-app-001"
+  - "reference-http-server-api-usage-001"
 related_docs:
   - id: "guide-app-components-module-001"
     relation: "depends_on"
@@ -20,6 +21,9 @@ related_docs:
   - id: "reference-component-http-server-from-app-001"
     relation: "related_to"
     path: "./reference-component-http-server-from-app-001.md"
+  - id: "reference-http-server-api-usage-001"
+    relation: "related_to"
+    path: "../reference-http-server-api-usage-001.md"
   - id: "reference-metric-module-001"
     relation: "related_to"
     path: "../reference-metric-module-001.md"
@@ -71,6 +75,8 @@ app.New(conf.Get).
 
 HTTP 路由便捷方法覆盖 `Get`、`Post`、`Put`、`Patch`、`Delete`、`Head`、`Options`、`Connect`、`Trace`；其它自定义方法可继续使用 `Handle(method, path, handler)`。
 
+WebSocket 路由使用 `httpServer.NewWebSocketHandler(...)` 创建 `IHandler`，再通过 `srv.Get(...)` 注册，避免业务代码直接依赖 Gin 原生路由。
+
 如果希望中间件组集中声明在 `app.Application`，优先使用 [[reference-component-http-server-from-app-001]]。
 <!-- @end-section -->
 
@@ -94,4 +100,5 @@ worker_id   = 1
 ## 相关文档
 
 - [[reference-component-http-server-from-app-001]]
+- [[reference-http-server-api-usage-001]]
 - [[reference-component-tracing-001]]

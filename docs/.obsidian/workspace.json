@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "276b14b1cf6c2d3f",
+        "id": "455b4ad4820300eb",
         "type": "tabs",
         "children": [
           {
-            "id": "cbea3cfd6639c9ad",
+            "id": "a114479bbb5790f2",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "reference/index.md.md",
+                "file": "测试.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "index.md"
+              "title": "测试"
             }
           }
         ]
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs-index.md",
+                "file": "测试.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "docs-index 的大纲"
+              "title": "测试 的大纲"
             }
           },
           {
@@ -176,11 +176,11 @@
             }
           }
         ],
-        "currentTab": 5
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
-    "width": 593.5
+    "width": 466.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -199,6 +199,14 @@
   },
   "active": "f0b60c65c15aa982",
   "lastOpenFiles": [
+    "XXYKtrEJ",
+    "XXqOvaR7",
+    "reference/reference-http-server-api-usage-001.md",
+    "reference/XXVL9FIM",
+    "reference-ip-axi-dma-ctrl-045.md",
+    "测试.md",
+    "未命名.canvas",
+    "reference/index.md.md",
     "reference/components/XXeqatWP",
     "reference/components/XXTeH6aj",
     "reference/components/XXKg8Zdj",
@@ -207,7 +215,6 @@
     "reference-docs-index-table.md",
     "guides/guide-app-components-module-001.md",
     "reference/reference-uuid-module-001.md",
-    "reference/index.md.md",
     "copilot/copilot-custom-prompts/Explain like I am 5.md",
     "copilot/copilot-custom-prompts/Emojify.md",
     "copilot/copilot-custom-prompts/Clip YouTube Transcript.md",
@@ -219,22 +226,15 @@
     "copilot/copilot-custom-prompts/Remove URLs.md",
     "reference/reference-clickhouse-module-001.md",
     "reference/reference-authz-module-001.md",
-    "测试.md",
     "docs-index.md",
-    "未命名.canvas",
     "reference/components/reference-component-authz-001.md",
     "superpowers/plans/2026-04-27-i18n-middleware.md",
     "superpowers/plans/2026-04-27-casbin-authz.md",
     "copilot/copilot-conversations/Model_Request_Failed@20260429_012628.md",
     "copilot/copilot-conversations",
     "copilot/copilot-custom-prompts/Generate glossary.md",
-    "copilot/copilot-custom-prompts/Generate table of contents.md",
-    "copilot/copilot-custom-prompts/Make longer.md",
     "copilot/copilot-custom-prompts",
     "copilot",
-    "superpowers/plans",
-    "superpowers",
-    "wiki/synthesis",
-    "wiki/sources"
+    "superpowers/plans"
   ]
 }

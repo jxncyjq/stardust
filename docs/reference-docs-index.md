@@ -84,6 +84,7 @@ related_docs:
 - [[reference-metric-module-001]] — metric 模块使用参考
 - [[reference-clickhouse-module-001]] — clickhouse 模块使用参考
 - [[reference-microservice-module-001]] — microService 模块使用参考
+- [[reference-http-server-api-usage-001]] — http_server 接口使用参考
 - [[reference-uuid-module-001]] — uuid 模块使用参考
 - [[reference-component-logs-001]] — LogsComponent 使用说明
 - [[reference-component-redis-001]] — RedisComponent 使用说明

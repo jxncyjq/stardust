@@ -16,6 +16,7 @@
 | ------------------------------------------------ | ------------------------------------------- | ---------------------------------------------- |
 | `reference/reference-metric-module-001.md`       | metric 模块使用参考                               | Prometheus 指标封装 (Counter/Gauge/Histogram)      |
 | `reference/reference-register-module-001.md`     | register 模块使用参考                             | 服务注册/发现 (etcd)、APISIX 网关注册、gRPC 集成             |
+| `reference/reference-http-server-api-usage-001.md` | http_server 接口使用参考                     | IHandler 接口注册、Response 统一返回、HTTP 模块目录结构 |
 
 ### 3. 数据存储模块 (Data Storage)
 | 文件路径 | 标题 | 核心功能 |

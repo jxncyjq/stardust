@@ -106,14 +106,6 @@ func NewMSConn(c *Config) (DBConn, error) {
 	return conn, nil
 }
 
-//func GetMySqlDB() DBConn {
-//	return dbConn
-//}
-//
-//func GetDao() BaseDao {
-//	return NewBaseDao(dbConn)
-//}
-
 // GetConnStr 检查传入字典和类型，返回数据库连接字符串，
 // @params c map[string]interface{}{ "host":"127.0.0.1","port":3306,"user":"root","passwd":"123456","dbname":"csv"}
 // @param t string "mysql" or "postgres"

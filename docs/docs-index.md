@@ -42,6 +42,7 @@ related_docs:
 | [[reference-metric-module-001]] | metric 模块使用参考 | reference | `docs/reference/reference-metric-module-001.md` | metric, prometheus, counter, gauge, histogram |
 | [[reference-clickhouse-module-001]] | clickhouse 模块使用参考 | reference | `docs/reference/reference-clickhouse-module-001.md` | clickhouse, analytics, sql, batch, async-insert |
 | [[reference-microservice-module-001]] | microService 模块使用参考 | reference | `docs/reference/reference-microservice-module-001.md` | microservice, breaker, limit, load, metric, register, syncx, tracing |
+| [[reference-http-server-api-usage-001]] | http_server 接口使用参考 | reference | `docs/reference/reference-http-server-api-usage-001.md` | http_server, http, ihandler, response, api, module |
 | [[reference-uuid-module-001]] | uuid 模块使用参考 | reference | `docs/reference/reference-uuid-module-001.md` | uuid, snowflake, session-id, random-string, worker-id |
 | [[reference-component-logs-001]] | LogsComponent 使用说明 | reference | `docs/reference/components/reference-component-logs-001.md` | app, components, logs, lifecycle |
 | [[reference-component-redis-001]] | RedisComponent 使用说明 | reference | `docs/reference/components/reference-component-redis-001.md` | app, components, redis, lifecycle |
@@ -107,6 +108,9 @@ related_docs:
 | microService / 微服务支撑模块 | [[reference-microservice-module-001]] |
 | breaker / limit / load / syncx / tracing | [[reference-microservice-module-001]] |
 | 熔断 / 限流 / 降载 / 链路追踪 | [[reference-microservice-module-001]] |
+| http_server 接口 / IHandler | [[reference-http-server-api-usage-001]] |
+| Response / BaseResponse / 统一返回 | [[reference-http-server-api-usage-001]] |
+| HTTP 接口目录结构 / SetupHTTP | [[reference-http-server-api-usage-001]] |
 | uuid 模块 / Snowflake ID | [[reference-uuid-module-001]] |
 | GenSessionId / worker_id | [[reference-uuid-module-001]] |
 | 随机字符串 / GenString / GenNumberString | [[reference-uuid-module-001]] |
