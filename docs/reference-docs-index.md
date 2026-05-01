@@ -7,16 +7,20 @@ category: "meta"
 tags: ["index", "meta", "docs"]
 version: "1.0.0"
 created: "2026-04-27"
-updated: "2026-04-27"
+updated: "2026-05-01"
 author: "jxncyjq"
 status: "published"
 parent: null
 children:
   - "reference-docs-index-table"
+  - "reference-index-001"
 related_docs:
   - id: "reference-docs-index-table"
     relation: "related_to"
     path: "./docs-index.md"
+  - id: "reference-index-001"
+    relation: "related_to"
+    path: "./reference/index.md"
 ---
 
 # 文档索引说明
@@ -32,6 +36,7 @@ related_docs:
 | --- | --- |
 | `docs/reference-docs-index.md` | 文档索引说明页，供 `[[reference-docs-index]]` WikiLink 跳转 |
 | `docs/docs-index.md` | 实际索引表和关键词索引，新增文档后必须同步维护 |
+| `docs/reference/index.md` | reference 文档分类目录，便于按模块快速查阅 |
 
 新增文档时，优先更新 `docs/docs-index.md` 的索引表和关键词索引；本文档只在索引维护规则变化时更新。
 <!-- @end-section -->
@@ -76,6 +81,7 @@ related_docs:
 - [[design-app-component-001]] — app 包组件化统一接口设计
 - [[guide-app-components-module-001]] — app/components/module 最小实践
 - [[design-stardust-bugfix-plan-001]] — stardust 库问题修补计划
+- [[reference-index-001]] — reference 文档目录
 - [[reference-databases-module-001]] — databases 模块使用参考
 - [[reference-redis-module-001]] — redis 模块使用参考
 - [[reference-mongodb-module-001]] — mongodb 模块使用参考

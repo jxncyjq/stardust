@@ -7,7 +7,7 @@ category: "meta"
 tags: ["index", "meta"]
 version: "1.0.0"
 created: "2026-04-26"
-updated: "2026-04-27"
+updated: "2026-05-01"
 author: "jxncyjq"
 status: "published"
 parent: "reference-docs-index"
@@ -29,6 +29,7 @@ related_docs:
 | ----------------------------------- | --------------- | --------- | ------------------------------------------------ | ------------------------------------ |
 | [[reference-docs-index]] | 文档索引说明 | reference | `docs/reference-docs-index.md` | index, meta, docs |
 | [[reference-docs-index-table]] | 文档索引表 | reference | `docs/docs-index.md` | index, meta |
+| [[reference-index-001]] | reference 文档目录 | reference | `docs/reference/index.md` | reference, index, docs |
 | [[design-app-component-001]]        | app 包组件化统一接口设计  | design    | `docs/design/design-app-component-001.md`        | app, component, lifecycle, topo-sort |
 | [[progress]]                        | 实现进度记录          | guide     | `docs/progress.md`                               | progress, app, component             |
 | [[2026-04-26-remaining-work-items]] | 2026-04-26 工作总结 | reference | `docs/memory/2026-04-26-remaining-work-items.md` | daily, app, component                |
@@ -68,6 +69,7 @@ related_docs:
 |--------|------|
 | 文档索引说明 | [[reference-docs-index]] |
 | 文档索引表 / docs-index.md | [[reference-docs-index-table]] |
+| reference 文档目录 / 参考文档目录 | [[reference-index-001]] |
 | Component / 组件接口 | [[design-app-component-001]] |
 | Container / 拓扑排序 | [[design-app-component-001]] |
 | Application / 编排层 | [[design-app-component-001]] |
