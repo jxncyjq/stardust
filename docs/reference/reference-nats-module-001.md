@@ -7,7 +7,7 @@ category: "backend/library"
 tags: ["nats", "jetstream", "pubsub", "queue", "stream"]
 version: "1.0.0"
 created: "2026-04-27"
-updated: "2026-04-27"
+updated: "2026-05-02"
 author: "jxncyjq"
 status: "published"
 parent: "reference-component-nats-001"
@@ -128,7 +128,7 @@ if !ok {
 ```
 <!-- @end-code -->
 
-`NatsComponent.Init` 会调用 `nats.Init(...)` 和 `nats.GetNatsManager()` 建立所有连接；`NatsComponent.Start` 会后台调用 `manager.StartAll()`，用于连接状态监控和 JetStream Stream 检查。
+`NatsComponent.Init` 会调用 `nats.Init(...)` 和 `nats.GetNatsManager()` 建立所有连接；`NatsComponent.Start` 会后台调用 `manager.StartAll()`，用于连接状态监控和 JetStream Stream 检查。JetStream 模式下，已有 Stream 会合并配置中的新增 subjects，不需要重启 NATS Server。
 <!-- @end-section -->
 
 <!-- @section: manager -->
@@ -171,12 +171,12 @@ if !ok {
 | --- | --- |
 | `Publish(subject, data)` | 发布消息；JetStream 模式使用 `js.Publish`，普通模式使用 `conn.Publish` |
 | `PublishAsync(subject, data)` | JetStream 异步发布；普通模式退化为 `Publish` |
-| `StartSubscription(subject, durableName, handler)` | 启动普通队列订阅或 JetStream PullSubscribe |
+| `StartSubscription(subject, durableName, handler)` | 启动普通队列订阅或 JetStream PullSubscribe；JetStream 模式会先确保 subject 已归入 Stream |
 | `StopSubscription(subject)` | 取消指定 subject 订阅 |
 | `StopAllSubscriptions()` | 取消当前连接的所有订阅 |
-| `AddStream(streamName, subjects)` | JetStream 模式下创建 Stream |
+| `AddStream(streamName, subjects)` | JetStream 模式下创建 Stream；Stream 已存在时合并缺失 subjects |
 | `AddConsumer(streamName, durableName, subjects...)` | JetStream 模式下创建 durable consumer |
-| `EnsureStream()` | JetStream 模式下确保配置中的 Stream 存在 |
+| `EnsureStream()` | JetStream 模式下确保配置中的 Stream 存在，并合并配置中的新增 subjects |
 | `Start()` | 运行连接状态监控，处理重连后 JetStream 上下文恢复 |
 | `Stop()` | 取消连接上下文并关闭底层 NATS 连接 |
 | `GetJetStream()` | 返回原生 `nats.JetStreamContext` |
@@ -235,10 +235,11 @@ if err != nil {
 
 当 `use_stream=true` 时，`StartSubscription` 会：
 
-1. 调用 `AddConsumer(streamName, durableName, subject)` 创建 durable consumer。
-2. 使用 `PullSubscribe(subject, durableName, nats.BindStream(streamName))` 订阅。
-3. 后台循环 `Fetch(10)` 拉取消息。
-4. 对匹配 subject 的消息调用 handler 后自动 `Ack()`。
+1. 确保当前 `subject` 已归入 `stream_name` 对应的 Stream；如果已有 Stream subjects 没有覆盖该 subject，会调用 `UpdateStream` 合并。
+2. 调用 `AddConsumer(streamName, durableName, subject)` 创建 durable consumer。
+3. 使用 `PullSubscribe(subject, durableName, nats.BindStream(streamName))` 订阅。
+4. 后台循环 `Fetch(10)` 拉取消息。
+5. 对匹配 subject 的消息调用 handler 后自动 `Ack()`。
 
 示例：
 
@@ -260,7 +261,7 @@ if err != nil {
 <!-- @section: stream-consumer -->
 ## Stream 和 Consumer
 
-JetStream 模式下可以显式创建 Stream 和 Consumer：
+JetStream 模式下可以显式创建或更新 Stream，并创建 Consumer：
 
 <!-- @code: stream-consumer -->
 ```go
@@ -274,7 +275,7 @@ if err := conn.AddConsumer("orders", "order-worker", "orders.created"); err != n
 ```
 <!-- @end-code -->
 
-当前封装创建 Stream 时使用 `nats.WorkQueuePolicy`，语义是每条消息只能被一个消费者消费。`AddConsumer` 默认使用 `AckExplicitPolicy` 和 `DeliverAllPolicy`；传入多个 subject 时使用 `FilterSubjects`，单个 subject 时使用 `FilterSubject`。
+当前封装创建 Stream 时使用 `nats.WorkQueuePolicy`，语义是每条消息只能被一个消费者消费。`AddStream` 和 `EnsureStream` 在 Stream 已存在时不会重建 Stream，只会基于现有 `StreamConfig` 合并缺失的 subjects 并调用 `UpdateStream`；已被 `orders.>` 这类通配符覆盖的 subject 不会重复追加。`AddConsumer` 默认使用 `AckExplicitPolicy` 和 `DeliverAllPolicy`；传入多个 subject 时使用 `FilterSubjects`，单个 subject 时使用 `FilterSubject`。
 <!-- @end-section -->
 
 <!-- @section: native -->
@@ -334,6 +335,7 @@ if err := natsMgr.CloseAll(); err != nil {
 - `GetNatsManager` 是全局单例，首次创建后再次调用 `Init` 不会重建已有 manager。
 - `NatsConfig.Validate()` 当前没有被 manager 初始化流程调用，配置完整性需要由配置层或业务层保证。
 - `StartAll()` 启动的是连接状态监控，不会自动注册业务订阅。
+- 新增 topic 如果已被现有通配符覆盖，不需要更新 Stream；如果未覆盖，应用启动、重连或 `StartSubscription` 会合并 subjects，不需要重启 NATS Server。
 - JetStream 订阅在 handler 返回后自动 Ack，不适合需要失败重投的处理逻辑。
 - `StopSubscription(subject)` 通过 `sub.Subject` 匹配；同一 subject 多个 durable 订阅时需要谨慎管理。
 - `CloseAll()` 会关闭连接并清空 manager；关闭后再通过同一个全局 manager 取连接会失败。

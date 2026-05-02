@@ -46,32 +46,7 @@ import (
 //}
 
 func (s *NatsConnection) AddStream(streamName string, subjects []string) error {
-	if !s.useStream {
-		return nats.ErrNoStreamResponse
-	}
-	js := s.getJS()
-	stream, err := js.StreamInfo(streamName)
-	if err != nil && stream != nil {
-		return err
-	}
-	if stream == nil {
-		s.streamInfo, err = js.AddStream(&nats.StreamConfig{
-			Name:      streamName,
-			Subjects:  subjects,
-			Retention: nats.WorkQueuePolicy, // 使用工作队列策略，确保每条消息只能被消费一次
-		})
-		if err != nil {
-			s.logger.Error("Failed to add stream",
-				zap.String("stream", streamName),
-				zap.Strings("subjects", subjects),
-				zap.Error(err))
-			return err
-		}
-		s.logger.Info("Stream added",
-			zap.String("stream", streamName),
-			zap.Strings("subjects", subjects))
-	}
-	return nil
+	return s.ensureStreamSubjects(streamName, subjects)
 }
 
 func (s *NatsConnection) AddConsumer(streamName, durableName string, subjects ...string) error {
@@ -257,6 +232,11 @@ func (s *NatsConnection) StartSubscription(subject, durableName string, handler 
 
 	if s.useStream {
 		// JetStream 场景
+		if err := s.ensureStreamSubjects(s.config.StreamName, []string{subject}); err != nil {
+			s.logger.Error("Ensure stream subject error", logs.ErrorInfo(err))
+			return err
+		}
+
 		if err := s.AddConsumer(s.config.StreamName, durableName, subject); err != nil {
 			s.logger.Error("AddConsumer error", logs.ErrorInfo(err))
 			return err
