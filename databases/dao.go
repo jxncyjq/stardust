@@ -350,7 +350,10 @@ func (m *OrmBaseDao) Native() DBConn {
 
 func (m *OrmBaseDao) Migrations(tables []interface{}) error {
 	db := (*gorm.DB)(m.conn)
-	return db.AutoMigrate(tables...)
+	// 禁止 AutoMigrate 自动创建 FK 约束，避免微服务环境下的约束冲突
+	noFKDB := db.Session(&gorm.Session{NewDB: true})
+	noFKDB.DisableForeignKeyConstraintWhenMigrating = true
+	return noFKDB.AutoMigrate(tables...)
 }
 
 func (m *OrmBaseDao) GetDBMetas() (map[string]interface{}, error) {

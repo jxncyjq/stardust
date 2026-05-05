@@ -3,7 +3,12 @@ example.exe
 /.claude
 /.omc
 /sample
-/.codex
+/.codex/INSTRUCTIONS
+/.codex/skills/*
+!/.codex/skills/go-stardust-rtl
 AGENTS.md
 
 /docs/copilot
+/.codex
+/.codex
+docs/商业化和规模化——软件工程阶段性之殇.md

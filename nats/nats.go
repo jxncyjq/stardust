@@ -15,19 +15,19 @@ type Subscription = nats.Subscription
 type Msg = nats.Msg
 
 type NatsConnection struct {
-	conn       *nats.Conn
-	config     *NatsConfig
-	name       string
-	jsMu       sync.RWMutex
-	js         nats.JetStreamContext
-	streamInfo *nats.StreamInfo
-	subject    []*nats.Subscription
-	useStream  bool
-	logger     *zap.Logger
-	url        string
-	stopChan   chan struct{}
-	ctx        context.Context
-	cancel     context.CancelFunc
+	conn        *nats.Conn
+	config      *NatsConfig
+	name        string
+	jsMu        sync.RWMutex
+	js          nats.JetStreamContext
+	streamInfo  *nats.StreamInfo
+	subject     []*nats.Subscription
+	useStream   bool
+	logger      *zap.Logger
+	url         string
+	stopChan    chan struct{}
+	ctx         context.Context
+	cancel      context.CancelFunc
 	messageChan chan *nats.Msg
 	handlersMu  sync.Mutex
 	handlers    map[string]func(*nats.Msg)
@@ -117,23 +117,5 @@ func (s *NatsConnection) EnsureStream() error {
 	if !s.useStream {
 		return nil // 如果未启用 JetStream，则无需创建 Stream
 	}
-
-	js := s.getJS()
-	// 检查 Stream 是否存在
-	stream, err := js.StreamInfo(s.config.StreamName)
-	if err != nil && stream == nil {
-		s.logger.Info("Stream not found, creating a new one", zap.String("stream", s.config.StreamName))
-		// 创建 Stream
-		_, err = js.AddStream(&nats.StreamConfig{
-			Name:      s.config.StreamName,
-			Subjects:  s.config.Subject,
-			Retention: nats.WorkQueuePolicy, // 确保每条消息只能被消费一次
-		})
-		if err != nil {
-			s.logger.Error("Failed to create stream", zap.Error(err))
-			return err
-		}
-		s.logger.Info("Stream created successfully", zap.String("stream", s.config.StreamName))
-	}
-	return nil
+	return s.ensureStreamSubjects(s.config.StreamName, s.config.Subject)
 }
