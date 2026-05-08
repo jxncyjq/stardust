@@ -2,6 +2,7 @@ package components
 
 import (
 	"context"
+	"sync"
 
 	"github.com/jxncyjq/stardust/app"
 	httpServer "github.com/jxncyjq/stardust/http_server"
@@ -24,6 +25,9 @@ type BusinessComponent struct {
 	manager      service.Manager
 	services     []service.Service
 	dependencies []string
+	registerOnce sync.Once
+	startOnce    sync.Once
+	started      bool
 }
 
 // Business 创建业务服务聚合组件。
@@ -65,13 +69,43 @@ func (c *BusinessComponent) Dependencies() []string {
 
 // Init 将多个业务服务注册到 service.Manager。
 func (c *BusinessComponent) Init(_ context.Context, _ app.ConfigFunc) error {
-	c.manager.AddMany(c.services...)
+	c.registerServices()
 	return nil
 }
 
+// registerServices 幂等地把 services 注册到 manager。
+func (c *BusinessComponent) registerServices() {
+	c.registerOnce.Do(func() {
+		c.manager.AddMany(c.services...)
+	})
+}
+
 // Start 非阻塞启动所有业务服务。
+// 若已通过 StartServices 同步启动过，本方法成为 no-op，避免重复 Start。
 func (c *BusinessComponent) Start(_ context.Context) error {
-	c.manager.StartAsync()
+	c.startOnce.Do(func() {
+		c.manager.StartAsync()
+		c.started = true
+	})
+	return nil
+}
+
+// StartServices 同步启动所有业务服务，供 app.WithPreHTTPStart 在 HTTP 路由注册前调用。
+//
+// 与 Start 的区别：
+//   - Start 异步（go svc.Start()），用于已托管在 app.Component 生命周期内的常规启动
+//   - StartServices 同步串行调用每个 svc.Start()，确保返回前所有 service 已完成初始化
+//     （前提：业务 service 的 Start 方法本身不阻塞）
+//
+// 重复调用幂等；与 Start 互斥（先调用谁后者即 no-op）。
+func (c *BusinessComponent) StartServices() error {
+	c.startOnce.Do(func() {
+		c.registerServices()
+		for _, svc := range c.services {
+			svc.Start()
+		}
+		c.started = true
+	})
 	return nil
 }
 

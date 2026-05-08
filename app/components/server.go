@@ -157,8 +157,16 @@ func HTTPServerFromApp(a *app.Application, setupFn func(*httpServer.HttpServer))
 	return &boundHTTPServerComponent{application: a, setup: setupFn}
 }
 
-func (c *boundHTTPServerComponent) Name() string           { return "http_server" }
-func (c *boundHTTPServerComponent) Dependencies() []string { return []string{"logs"} }
+func (c *boundHTTPServerComponent) Name() string { return "http_server" }
+func (c *boundHTTPServerComponent) Dependencies() []string {
+	deps := []string{"logs"}
+	// 若声明了 PreHTTPStart 回调，业务 service 需要在 http_server.Init 之前完成 Init，
+	// 才能在 PreHTTPStart 中安全访问其依赖（databases / redis / nats 等）。
+	if c.application != nil && c.application.HasPreHTTPStart() {
+		deps = append(deps, "business")
+	}
+	return deps
+}
 
 func (c *boundHTTPServerComponent) Init(_ context.Context, configFn app.ConfigFunc) (retErr error) {
 	defer recoverToError(&retErr, "http_server")
@@ -171,6 +179,12 @@ func (c *boundHTTPServerComponent) Init(_ context.Context, configFn app.ConfigFu
 	// 自动应用 WithHTTPGroup 预声明的中间件组，setupFn 无需再 AddGroup
 	for _, g := range c.application.HTTPGroups() {
 		srv.AddGroup(g.Name, g.Middleware...)
+	}
+
+	// 在装路由前同步执行 WithPreHTTPStart 注册的回调，
+	// 让业务 service 有机会在 SetupHTTP 之前完成初始化（如构造 handler）。
+	if err := c.application.RunPreHTTPStart(); err != nil {
+		return fmt.Errorf("pre http start: %w", err)
 	}
 
 	if c.setup != nil {

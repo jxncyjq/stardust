@@ -19,11 +19,12 @@ type HTTPGroupDef struct {
 
 // Application 是服务编排入口，提供声明式 API 组合所需组件和服务器。
 type Application struct {
-	container  *Container
-	configFn   ConfigFunc
-	httpServer *httpServer.HttpServer
-	grpcServer *httpServer.GrpcServer
-	httpGroups []HTTPGroupDef // WithHTTPGroup 预声明的中间件组
+	container     *Container
+	configFn      ConfigFunc
+	httpServer    *httpServer.HttpServer
+	grpcServer    *httpServer.GrpcServer
+	httpGroups    []HTTPGroupDef // WithHTTPGroup 预声明的中间件组
+	preHTTPStart  []func() error // HTTP 服务器装路由前需要执行的同步回调
 }
 
 // New 创建 Application，configFn 通常为 conf.Get。
@@ -74,6 +75,33 @@ func (a *Application) WithHTTPGroup(group string, mw ...httpServer.HandlerFunc) 
 // HTTPGroups 返回通过 WithHTTPGroup 预声明的中间件组列表，供 components.HTTPServerFromApp 读取。
 func (a *Application) HTTPGroups() []HTTPGroupDef {
 	return a.httpGroups
+}
+
+// WithPreHTTPStart 注册一个在 HTTP 服务器装路由（setupFn）之前同步执行的回调。
+//
+// 典型用途：在 HTTP 路由注册前同步启动 BusinessComponent 内的 service.Service，
+// 使每个 module 的 SetupHTTP 能依赖 module.Start() 已经初始化好的 handler。
+// 多次调用按注册顺序执行，任一回调返回错误即中断后续 Init。
+func (a *Application) WithPreHTTPStart(fn func() error) *Application {
+	if fn != nil {
+		a.preHTTPStart = append(a.preHTTPStart, fn)
+	}
+	return a
+}
+
+// RunPreHTTPStart 按注册顺序执行所有 WithPreHTTPStart 回调，供 components.HTTPServerFromApp 在 Init 阶段调用。
+func (a *Application) RunPreHTTPStart() error {
+	for _, fn := range a.preHTTPStart {
+		if err := fn(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// HasPreHTTPStart 返回是否注册过 WithPreHTTPStart 回调，供 boundHTTPServerComponent 推导依赖关系。
+func (a *Application) HasPreHTTPStart() bool {
+	return len(a.preHTTPStart) > 0
 }
 
 // Run 按 Init → Start → 等信号 → Stop 顺序编排整个服务生命周期。
