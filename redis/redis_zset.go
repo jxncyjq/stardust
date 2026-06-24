@@ -2,7 +2,6 @@ package redis
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/redis/go-redis/v9"
@@ -18,7 +17,7 @@ func (r *redisView) ZCount(ctx context.Context, key string, min, max float64) (i
 }
 
 func (r *redisView) ZLexCount(ctx context.Context, key, min, max string) (int64, error) {
-	return 0, errors.New("not implemented")
+	return r.cmd.ZLexCount(ctx, r.expandKey(key), min, max).Result()
 }
 
 func (r *redisView) ZAdd(ctx context.Context, key string, members ...*ZMember) (int64, error) {
