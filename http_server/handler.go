@@ -1,6 +1,9 @@
 package httpServer
 
 import (
+	stderrors "errors"
+	"io"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jxncyjq/stardust/errors"
 )
@@ -49,7 +52,10 @@ func (h *Handler[Req, Resp]) GetTags() []string {
 func (h *Handler[Req, Resp]) GetFunc() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req Req
-		if err := c.ShouldBind(&req); err != nil {
+		// 空请求体（io.EOF）视为无入参：DELETE 等无 body 的请求在客户端携带
+		// Content-Type: application/json 时，gin 会选择 JSON 绑定并对空 body 解码
+		// 返回 io.EOF。此类请求的入参本就为空结构体，应放行而非报错。
+		if err := c.ShouldBind(&req); err != nil && !stderrors.Is(err, io.EOF) {
 			Response(c, errors.New(err.Error(), 40000), nil)
 			return
 		}
