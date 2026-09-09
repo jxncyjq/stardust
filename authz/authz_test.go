@@ -205,10 +205,17 @@ func TestCasbinAuthorizerEnforceWithGormSQLite(t *testing.T) {
 		t.Fatalf("Enforcer.SavePolicy() error = %v, want nil", err)
 	}
 
+	// 关闭首个 authorizer 的底层 DB 连接，否则 Windows 上 t.TempDir 清理时
+	// authz.db 仍被占用导致清理失败。
+	if err := authorizer.Close(); err != nil {
+		t.Fatalf("CasbinAuthorizer.Close() error = %v, want nil", err)
+	}
+
 	authorizer, err = NewCasbinAuthorizer(cfg)
 	if err != nil {
 		t.Fatalf("NewCasbinAuthorizer(%+v) reload error = %v, want nil", cfg, err)
 	}
+	t.Cleanup(func() { _ = authorizer.Close() })
 
 	allowed, err = authorizer.Enforce(context.Background(), "roleName", "/orders", "GET")
 	if err != nil {
