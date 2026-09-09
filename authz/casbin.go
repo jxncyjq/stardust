@@ -10,6 +10,7 @@ import (
 // CasbinAuthorizer authorizes requests with a Casbin enforcer.
 type CasbinAuthorizer struct {
 	enforcer *casbin.Enforcer
+	adapter  interface{}
 }
 
 var _ Authorizer = (*CasbinAuthorizer)(nil)
@@ -29,7 +30,7 @@ func NewCasbinAuthorizer(cfg Config) (*CasbinAuthorizer, error) {
 	if err != nil {
 		return nil, fmt.Errorf("authz: create casbin enforcer: %w", err)
 	}
-	return &CasbinAuthorizer{enforcer: enforcer}, nil
+	return &CasbinAuthorizer{enforcer: enforcer, adapter: adapter}, nil
 }
 
 // Enforce checks whether sub can perform act on obj.
@@ -38,4 +39,14 @@ func (a *CasbinAuthorizer) Enforce(ctx context.Context, sub, obj, act string) (b
 		return false, err
 	}
 	return a.enforcer.Enforce(sub, obj, act)
+}
+
+// Close releases resources held by the policy adapter, such as an underlying
+// database connection opened by the gorm adapter. It is safe to call when the
+// adapter holds no closable resources (e.g. the default file adapter).
+func (a *CasbinAuthorizer) Close() error {
+	if closer, ok := a.adapter.(interface{ Close() error }); ok {
+		return closer.Close()
+	}
+	return nil
 }

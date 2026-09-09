@@ -63,13 +63,21 @@ func Test(t *testing.T) {
 		fmt.Println("finally")
 	}).Do()
 
-	// 发生panic，尝试捕获错误，但是没有捕获得到，则异常会被向上抛出，即仍然会panic
-	Try(func() {
-		panic(errors.New("test"))
-	}).Catch(errFoo, func(err error) {
-		fmt.Println("catch success")
-	}).Finally(func() {
-		fmt.Println("not catch finally")
-	}).Do()
+	// 发生panic，尝试捕获错误，但是没有捕获得到，则异常会被向上抛出，即仍然会panic。
+	// 用 recover 断言确实向上重抛，同时保证 finally 已执行。
+	func() {
+		defer func() {
+			if r := recover(); r == nil {
+				t.Error("未匹配到 Catch 时应向上重抛 panic，但没有发生 panic")
+			}
+		}()
+		Try(func() {
+			panic(errors.New("test"))
+		}).Catch(errFoo, func(err error) {
+			fmt.Println("catch success")
+		}).Finally(func() {
+			fmt.Println("not catch finally")
+		}).Do()
+	}()
 
 }

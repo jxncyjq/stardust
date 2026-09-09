@@ -17,6 +17,12 @@ var (
 		return gormadapter.NewAdapterByDB(db)
 	}
 	newGormAdapter = func(driver, dsn string) (interface{}, error) {
+		if driver == "sqlite3" {
+			// sqlite 没有 CREATE DATABASE 概念，dbSpecified=false 时 gorm-adapter 会
+			// 额外打开一条用于建库的连接且从不关闭，在 Windows 上会一直占用 db 文件。
+			// 传 dbSpecified=true 跳过该步骤，只保留一条可被 Close 释放的连接。
+			return gormadapter.NewAdapter(driver, dsn, true)
+		}
 		return gormadapter.NewAdapter(driver, dsn)
 	}
 )
